@@ -1,9 +1,11 @@
 import { createStore, applyMiddleware } from 'redux';
 import modules from './modules';
-import loggerMiddleware from './lib/loggerMiddleware';
 
-//미들웨어가 여러개인 경우에는 파라미터로 여러개를 전달해주면 된다.
-//미들웨어의 순서는 여기서 전달한 파라미터의 순서대로 지정.
-const store = createStore(modules, applyMiddleware(loggerMiddleware))
+import { createLogger } from 'redux-logger';
+import ReduxThunk from 'redux-thunk';
+
+const logger = createLogger();
+
+const store = createStore(modules, applyMiddleware(logger, ReduxThunk))
 
 export default store;
