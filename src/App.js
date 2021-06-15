@@ -7,17 +7,24 @@ import * as postActions from './modules/post';
 class App extends Component {
   
   componentDidMount(){
-    //컴포넌트가 처음 마운트 될 때 현재 number를 postId로 사용하여 포스트 내용을 불러온다.
-    const { number, PostActions } = this.props;
-    PostActions.getPost(number);
+    const { number } = this.props;
+    this.getPost(number);
   }
 
   componentWillReceiveProps(nextProps) {
+    if(this.props.number !== nextProps.number){
+      this.getPost(nextProps.number)
+    }
+  }
+
+  getPost = async (postId) => {
     const { PostActions } = this.props;
 
-    //현재 number와 새로 받을 number가 다를 경우에 요청을 시도.
-    if(this.props.number !== nextProps.number){
-      PostActions.getPost(nextProps.number)
+    try {
+      await PostActions.getPost(postId);
+      console.log('요청이 완료된 다음에 실행됨')
+    } catch(e) {
+      console.log('에러가 발생!');
     }
   }
 
@@ -47,8 +54,8 @@ export default connect(
   (state) => ({
     number: state.counter,
     post: state.post.data,
-    loading: state.post.pending,
-    error: state.post.error
+    loading: state.pender.pending['GET_POST'],
+    error: state.pender.failure['GET_POST']
   }),
   (dispatch) => ({
     CounterActions: bindActionCreators(counterActions, dispatch),
